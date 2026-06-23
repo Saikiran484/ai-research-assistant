@@ -29,7 +29,11 @@ class Document(Base):
     content_type: Mapped[str] = mapped_column(String(127), nullable=False)
     file_size: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[DocumentStatus] = mapped_column(
-        Enum(DocumentStatus, name="document_status"),
+        Enum(
+            DocumentStatus,
+            name="document_status",
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
         nullable=False,
         default=DocumentStatus.PENDING,
     )
