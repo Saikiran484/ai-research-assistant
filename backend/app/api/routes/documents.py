@@ -33,3 +33,11 @@ def get_document(
     db: Session = Depends(get_db),
 ):
     return document_service.get_document(db, document_id)
+
+
+@router.post("/{document_id}/parse", response_model=DocumentResponse)
+def parse_document(
+    document_id: uuid.UUID,
+    db: Session = Depends(get_db),
+):
+    return document_service.parse_document(db, document_id)

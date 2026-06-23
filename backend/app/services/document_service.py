@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.document import Document, DocumentStatus
+from app.services import parser_service
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
@@ -56,6 +57,26 @@ async def create_document(db: Session, file: UploadFile) -> Document:
         status=DocumentStatus.PENDING,
     )
     db.add(document)
+    db.commit()
+    db.refresh(document)
+    return parse_document(db, document.id)
+
+
+def parse_document(db: Session, document_id: uuid.UUID) -> Document:
+    document = get_document(db, document_id)
+    document.status = DocumentStatus.PROCESSING
+    document.parse_error = None
+    db.commit()
+
+    try:
+        file_path = settings.upload_dir / document.filename
+        document.extracted_text = parser_service.extract_text(file_path)
+        document.status = DocumentStatus.READY
+    except Exception as exc:
+        document.status = DocumentStatus.FAILED
+        document.parse_error = str(exc)[:500]
+        document.extracted_text = None
+
     db.commit()
     db.refresh(document)
     return document

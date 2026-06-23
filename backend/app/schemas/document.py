@@ -15,6 +15,8 @@ class DocumentResponse(BaseModel):
     content_type: str
     file_size: int
     status: DocumentStatus
+    extracted_text: str | None = None
+    parse_error: str | None = None
     created_at: datetime
     updated_at: datetime
 
