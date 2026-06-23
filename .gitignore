@@ -54,3 +54,9 @@ htmlcov/
 
 # Docker (local overrides)
 docker-compose.override.yml
+
+# Uploaded files (keep folder, ignore contents)
+backend/uploads/*
+!backend/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep

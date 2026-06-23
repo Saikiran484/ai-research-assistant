@@ -202,6 +202,28 @@ docker compose exec db psql -U postgres -d research_assistant -c "\d documents"
 
 **Expected:** Columns `id`, `filename`, `original_filename`, `content_type`, `file_size`, `status`, `created_at`, `updated_at`.
 
+## Document Upload API (Phase 4)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/documents` | Upload `.pdf`, `.docx`, or `.txt` (max 10 MB) |
+| GET | `/documents` | List all documents |
+| GET | `/documents/{id}` | Get one document |
+
+### Test via Swagger
+
+1. `docker compose up --build -d`
+2. Open http://localhost:8000/docs
+3. Use **POST /documents** → upload a file
+4. Use **GET /documents** to confirm it appears
+
+### Test via curl
+
+```powershell
+curl -X POST "http://localhost:8000/documents" -F "file=@C:\path\to\file.txt"
+curl http://localhost:8000/documents
+```
+
 ## Development Phases
 
 | Phase | Focus |
