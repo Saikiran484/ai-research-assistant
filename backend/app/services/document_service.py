@@ -79,6 +79,14 @@ def parse_document(db: Session, document_id: uuid.UUID) -> Document:
 
     db.commit()
     db.refresh(document)
+
+    if document.status == DocumentStatus.READY and document.extracted_text:
+        try:
+            from app.services import index_service
+            index_service.index_document(db, document.id)
+        except Exception:
+            pass
+
     return document
 
 

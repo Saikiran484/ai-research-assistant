@@ -224,6 +224,36 @@ curl -X POST "http://localhost:8000/documents" -F "file=@C:\path\to\file.txt"
 curl http://localhost:8000/documents
 ```
 
+## ChromaDB Vector Store (Phase 6)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/documents/{id}/index` | Chunk text + embed + store in ChromaDB |
+| POST | `/search` | Semantic search over indexed chunks |
+
+Upload auto-indexes after parsing (requires Ollama embedding model).
+
+```powershell
+docker compose up --build -d
+```
+
+ChromaDB runs at http://localhost:8001
+
+## Ollama Integration (Phase 7)
+
+Install [Ollama](https://ollama.com/) locally, then:
+
+```powershell
+ollama pull llama3.2
+ollama pull nomic-embed-text
+```
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/chat` | Chat with local LLM |
+
+`/health` reports `database`, `chroma`, and `ollama` status.
+
 ## Development Phases
 
 | Phase | Focus |

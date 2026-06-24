@@ -2,9 +2,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.routes import documents
+from app.api.routes import documents, search
 from app.core.config import settings
 from app.db.session import check_db_connection
+from app.vector.chroma_store import check_chroma_connection
 
 
 @asynccontextmanager
@@ -20,6 +21,7 @@ app = FastAPI(
 )
 
 app.include_router(documents.router)
+app.include_router(search.router)
 
 
 @app.get("/")
@@ -32,7 +34,10 @@ def root():
 @app.get("/health")
 def health():
     db_connected = check_db_connection()
+    chroma_connected = check_chroma_connection()
+    all_ok = db_connected and chroma_connected
     return {
-        "status": "healthy" if db_connected else "degraded",
+        "status": "healthy" if all_ok else "degraded",
         "database": "connected" if db_connected else "disconnected",
+        "chroma": "connected" if chroma_connected else "disconnected",
     }
