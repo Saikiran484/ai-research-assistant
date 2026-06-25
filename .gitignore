@@ -55,6 +55,11 @@ htmlcov/
 # Docker (local overrides)
 docker-compose.override.yml
 
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
 # Uploaded files (keep folder, ignore contents)
 backend/uploads/*
 !backend/uploads/.gitkeep
