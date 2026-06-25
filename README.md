@@ -224,20 +224,86 @@ curl -X POST "http://localhost:8000/documents" -F "file=@C:\path\to\file.txt"
 curl http://localhost:8000/documents
 ```
 
+## ChromaDB Vector Store (Phase 6)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/documents/{id}/index` | Chunk text + embed + store in ChromaDB |
+| POST | `/search` | Semantic search over indexed chunks |
+
+Upload auto-indexes after parsing (requires Ollama embedding model).
+
+```powershell
+docker compose up --build -d
+```
+
+ChromaDB runs at http://localhost:8001
+
+## Ollama Integration (Phase 7)
+
+Install [Ollama](https://ollama.com/) locally, then:
+
+```powershell
+ollama pull llama3.2
+ollama pull nomic-embed-text
+```
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/chat` | Chat with local LLM |
+
+`/health` reports `database`, `chroma`, and `ollama` status.
+
+## RAG Pipeline (Phase 8)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/rag/ask` | Retrieve relevant chunks + generate grounded answer |
+
+```powershell
+curl -X POST http://localhost:8000/rag/ask -H "Content-Type: application/json" -d "{\"question\":\"What is in my documents?\"}"
+```
+
+## Agent Architecture (Phase 9)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/agent/run` | LangChain ReAct agent with search + list tools |
+
+```powershell
+curl -X POST http://localhost:8000/agent/run -H "Content-Type: application/json" -d "{\"query\":\"List my documents and summarize topics\"}"
+```
+
+## Next.js Frontend (Phase 10)
+
+```powershell
+# Option A: Docker
+docker compose up --build -d
+# Open http://localhost:3000
+
+# Option B: Local dev
+cd frontend
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+Set `NEXT_PUBLIC_API_URL=http://localhost:8000` in `.env.local` if needed.
+
 ## Development Phases
 
-| Phase | Focus |
-|-------|-------|
-| 1 | Repository structure, FastAPI skeleton, health endpoint |
-| 2 | Docker + PostgreSQL |
-| 3 | SQLAlchemy models + Alembic migrations |
-| 4 | Document upload API |
-| 5 | PDF and DOCX parsing |
-| 6 | ChromaDB vector store |
-| 7 | Ollama integration |
-| 8 | RAG pipeline |
-| 9 | Agent architecture |
-| 10 | Next.js frontend |
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 1 | Repository structure, FastAPI skeleton, health endpoint | Done |
+| 2 | Docker + PostgreSQL | Done |
+| 3 | SQLAlchemy models + Alembic migrations | Done |
+| 4 | Document upload API | Done |
+| 5 | PDF and DOCX parsing | Done |
+| 6 | ChromaDB vector store | Done |
+| 7 | Ollama integration | Done |
+| 8 | RAG pipeline | Done |
+| 9 | Agent architecture | Done |
+| 10 | Next.js frontend | Done |
 
 ## License
 
