@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import chat, documents, search
+from app.api.routes import agent, chat, documents, rag, search
 from app.core.config import settings
 from app.db.session import check_db_connection
 from app.vector.chroma_store import check_chroma_connection
@@ -21,15 +22,26 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(documents.router)
 app.include_router(search.router)
 app.include_router(chat.router)
+app.include_router(rag.router)
+app.include_router(agent.router)
 
 
 @app.get("/")
 def root():
     return {
         "message": "AI Research Assistant API",
+        "docs": "/docs",
     }
 
 
